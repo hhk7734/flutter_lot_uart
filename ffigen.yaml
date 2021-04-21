@@ -1,0 +1,14 @@
+name: "LibLotUart"
+description: "Bindings to `liblot_uart`"
+output: "lib/src/bindings.g.dart"
+llvm-path:
+  - "/opt/toolchain/clang/11"
+headers:
+  entry-points:
+    - "linux/lot_uart/**.h"
+functions:
+  rename:
+    "lot_uart_(.*)": "$1"
+macros:
+  exclude:
+    - ".*"

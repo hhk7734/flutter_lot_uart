@@ -1,0 +1,23 @@
+name: lot_uart
+description: "`lot_uart` is a library to communicate with uart devices."
+version: 0.1.0
+repository: https://github.com/hhk7734/flutter_lot_uart
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+  flutter: ">=1.20.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  ffi: ^1.0.0
+
+dev_dependencies:
+  pedantic: ^1.11.0
+  ffigen: ^2.4.2
+
+flutter:
+  plugin:
+    platforms:
+      linux:
+        pluginClass: LotUartPlugin

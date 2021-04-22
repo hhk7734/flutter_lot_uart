@@ -52,4 +52,10 @@ class Uart {
     fd = _native.init(cDevice.cast<ffi.Int8>());
     return fd >= 0 ? true : false;
   }
+
+  void dispose() {
+    if (fd >= 0) {
+      _native.dispose(fd);
+    }
+  }
 }

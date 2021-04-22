@@ -21,3 +21,28 @@
  * SOFTWARE.
  */
 #include "lot_uart.h"
+
+#include <fcntl.h>     // open(), fcntl()
+#include <unistd.h>    // close()
+
+int lot_uart_init(const char *device) {
+    // No controlling tty, Enables nonblocking mode.
+    int fd = open(device, O_RDWR | O_NOCTTY | O_NONBLOCK);
+    if(fd < 0) { return fd; }
+
+    // Explicit reset due to O_NONBLOCK.
+    fcntl(fd, F_SETFL, O_RDWR);
+
+    // Default, 115200, 8 bits, none parity bits, 1 stop bits
+    lot_uart_set_baudrate(fd, 115200);
+
+    lot_uart_set_data_bits(fd, UART_DATA_EIGHT);
+
+    lot_uart_set_parity_bits(fd, UART_PARITY_NONE);
+
+    lot_uart_set_stop_bits(fd, UART_STOP_ONE);
+
+    return fd;
+}
+
+void lot_uart_dispose(int fd) { close(fd); }

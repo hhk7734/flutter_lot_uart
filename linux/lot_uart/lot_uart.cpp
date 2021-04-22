@@ -149,3 +149,32 @@ void lot_uart_set_data_bits(int fd, UartDataBits bits) {
 
     usleep(10000);
 }
+
+void lot_uart_set_parity_bits(int fd, UartParityBits bits) {
+    struct termios options;
+
+    tcgetattr(fd, &options);
+
+    switch(bits) {
+    case UART_PARITY_NONE:
+        options.c_cflag &= ~PARENB;
+        options.c_iflag &= ~INPCK;
+        break;
+    case UART_PARITY_EVEN:
+        options.c_iflag |= INPCK;
+        options.c_cflag |= PARENB;
+        options.c_cflag &= ~PARODD;
+        break;
+    case UART_PARITY_ODD:
+        options.c_iflag |= INPCK;
+        options.c_cflag |= PARENB;
+        options.c_cflag |= PARODD;
+        break;
+    case UART_PARITY_MARK: break;
+    case UART_PARITY_SPACE: break;
+    }
+
+    tcsetattr(fd, TCSANOW, &options);
+
+    usleep(10000);
+}

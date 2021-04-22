@@ -97,6 +97,19 @@ class Uart {
     }
   }
 
+  void transmit(Uint8List txBuf) {
+    final _txBuf = malloc.allocate<ffi.Uint8>(txBuf.length);
+    var index = 0;
+
+    for (var value in txBuf) {
+      _txBuf[index++] = value;
+    }
+
+    _native.transmit(fd, _txBuf, txBuf.length);
+
+    malloc.free(_txBuf);
+  }
+
   void dispose() {
     if (fd >= 0) {
       _native.dispose(fd);

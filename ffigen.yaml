@@ -12,3 +12,6 @@ functions:
 macros:
   exclude:
     - ".*"
+enums:
+  rename:
+    "(.*)": "CEnum$1"

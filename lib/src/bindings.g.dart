@@ -154,23 +154,23 @@ class LibLotUart {
 class __fsid_t extends ffi.Opaque {}
 
 abstract class CEnumUartDataBits {
-  static const int UART_DATA_FIVE = 0;
-  static const int UART_DATA_SIX = 1;
-  static const int UART_DATA_SEVEN = 2;
-  static const int UART_DATA_EIGHT = 3;
+  static const int FIVE = 0;
+  static const int SIX = 1;
+  static const int SEVEN = 2;
+  static const int EIGHT = 3;
 }
 
 abstract class CEnumUartParityBits {
-  static const int UART_PARITY_NONE = 0;
-  static const int UART_PARITY_EVEN = 1;
-  static const int UART_PARITY_ODD = 2;
-  static const int UART_PARITY_MARK = 3;
-  static const int UART_PARITY_SPACE = 4;
+  static const int NONE = 0;
+  static const int EVEN = 1;
+  static const int ODD = 2;
+  static const int MARK = 3;
+  static const int SPACE = 4;
 }
 
 abstract class CEnumUartStopBits {
-  static const int UART_STOP_ONE = 0;
-  static const int UART_STOP_TWO = 1;
+  static const int ONE = 0;
+  static const int TWO = 1;
 }
 
 typedef _c_init = ffi.Int32 Function(

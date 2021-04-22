@@ -15,3 +15,6 @@ macros:
 enums:
   rename:
     "(.*)": "CEnum$1"
+  member-rename:
+    "(.*)":
+      "UART_.*_(.*)": "$1"

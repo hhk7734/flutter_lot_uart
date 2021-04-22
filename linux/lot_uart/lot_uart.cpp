@@ -27,7 +27,7 @@
 #include <sys/ioctl.h>    // ioctl()
 #include <termios.h>
 #include <thread>
-#include <unistd.h>    // close(), write()
+#include <unistd.h>    // close(), write(), read()
 
 int lot_uart_init(const char *device) {
     int            fd;
@@ -207,4 +207,8 @@ int lot_uart_receive_available(int fd) {
     if(ioctl(fd, FIONREAD, &result) < 0) { return -1; }
 
     return result;
+}
+
+void lot_uart_receive(int fd, uint8_t *rx_buf, int rx_size) {
+    read(fd, rx_buf, rx_size);
 }

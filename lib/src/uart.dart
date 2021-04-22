@@ -53,6 +53,50 @@ class Uart {
     return fd >= 0 ? true : false;
   }
 
+  set baudrate(int baudrate) => _native.set_baudrate(fd, baudrate);
+
+  set dataBits(UartDataBits bits) {
+    switch (bits) {
+      case UartDataBits.five:
+        _native.set_data_bits(fd, CEnumUartDataBits.FIVE);
+        break;
+      case UartDataBits.six:
+        _native.set_data_bits(fd, CEnumUartDataBits.SIX);
+        break;
+      case UartDataBits.seven:
+        _native.set_data_bits(fd, CEnumUartDataBits.SEVEN);
+        break;
+      case UartDataBits.eight:
+        _native.set_data_bits(fd, CEnumUartDataBits.EIGHT);
+        break;
+    }
+  }
+
+  set parityBits(UartParityBits bits) {
+    switch (bits) {
+      case UartParityBits.none:
+        _native.set_parity_bits(fd, CEnumUartParityBits.NONE);
+        break;
+      case UartParityBits.even:
+        _native.set_parity_bits(fd, CEnumUartParityBits.EVEN);
+        break;
+      case UartParityBits.odd:
+        _native.set_parity_bits(fd, CEnumUartParityBits.ODD);
+        break;
+    }
+  }
+
+  set stopBits(UartStopBits bits) {
+    switch (bits) {
+      case UartStopBits.one:
+        _native.set_stop_bits(fd, CEnumUartStopBits.ONE);
+        break;
+      case UartStopBits.two:
+        _native.set_stop_bits(fd, CEnumUartStopBits.TWO);
+        break;
+    }
+  }
+
   void dispose() {
     if (fd >= 0) {
       _native.dispose(fd);

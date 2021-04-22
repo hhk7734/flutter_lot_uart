@@ -110,6 +110,8 @@ class Uart {
     malloc.free(_txBuf);
   }
 
+  int receiveAvailable() => _native.receive_available(fd);
+
   Uint8List receive(int rxSize) {
     final _rxBuf = malloc.allocate<ffi.Uint8>(rxSize);
     final rxBuf = Uint8List(rxSize);

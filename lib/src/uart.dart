@@ -41,7 +41,7 @@ enum UartParityBits { none, even, odd }
 enum UartStopBits { one, two }
 
 class Uart {
-  final String device;
+  String device;
   int _fd = -1;
   final _native = libLotUart;
 

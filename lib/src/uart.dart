@@ -110,6 +110,21 @@ class Uart {
     malloc.free(_txBuf);
   }
 
+  Uint8List receive(int rxSize) {
+    final _rxBuf = malloc.allocate<ffi.Uint8>(rxSize);
+    final rxBuf = Uint8List(rxSize);
+
+    _native.receive(fd, _rxBuf, rxSize);
+
+    for (var index = 0; index < rxSize; index++) {
+      rxBuf[index] = _rxBuf[index];
+    }
+
+    malloc.free(_rxBuf);
+
+    return rxBuf;
+  }
+
   void dispose() {
     if (fd >= 0) {
       _native.dispose(fd);

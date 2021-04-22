@@ -28,6 +28,41 @@ extern "C" {
 
 #include <stdint.h>
 
+enum UartDataBits {
+    UART_DATA_FIVE,
+    UART_DATA_SIX,
+    UART_DATA_SEVEN,
+    UART_DATA_EIGHT
+};
+
+enum UartParityBits {
+    UART_PARITY_NONE,
+    UART_PARITY_EVEN,
+    UART_PARITY_ODD,
+    UART_PARITY_MARK,
+    UART_PARITY_SPACE
+};
+
+enum UartStopBits { UART_STOP_ONE, UART_STOP_TWO };
+
+int lot_uart_init(const char *device);
+
+void lot_uart_dispose(int fd);
+
+void lot_uart_set_baudrate(int fd, uint32_t baudrate);
+
+void lot_uart_set_data_bits(int fd, UartDataBits bits);
+
+void lot_uart_set_parity_bits(int fd, UartParityBits bits);
+
+void lot_uart_set_stop_bits(int fd, UartStopBits bits);
+
+void lot_uart_transmit(int fd, uint8_t *tx_buf, int tx_size);
+
+int lot_uart_receive_available(void);
+
+void lot_uart_receive(int fd, uint8_t *rx_buf, int rx_size);
+
 #ifdef __cplusplus
 }
 #endif

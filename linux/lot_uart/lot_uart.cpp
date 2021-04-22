@@ -23,7 +23,8 @@
 #include "lot_uart.h"
 
 #include <chrono>
-#include <fcntl.h>    // open(), fcntl()
+#include <fcntl.h>        // open(), fcntl()
+#include <sys/ioctl.h>    // ioctl()
 #include <termios.h>
 #include <thread>
 #include <unistd.h>    // close(), write()
@@ -198,4 +199,12 @@ void lot_uart_set_stop_bits(int fd, UartStopBits bits) {
 
 void lot_uart_transmit(int fd, uint8_t *tx_buf, int tx_size) {
     write(fd, tx_buf, tx_size);
+}
+
+int lot_uart_receive_available(int fd) {
+    int result;
+
+    if(ioctl(fd, FIONREAD, &result) < 0) { return -1; }
+
+    return result;
 }

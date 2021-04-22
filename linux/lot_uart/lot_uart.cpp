@@ -131,3 +131,21 @@ void lot_uart_set_baudrate(int fd, uint32_t baudrate) {
 
     usleep(10000);
 }
+
+void lot_uart_set_data_bits(int fd, UartDataBits bits) {
+    struct termios options;
+
+    tcgetattr(fd, &options);
+
+    options.c_cflag &= ~CSIZE;
+    switch(bits) {
+    case UART_DATA_FIVE: options.c_cflag |= CS5;
+    case UART_DATA_SIX: options.c_cflag |= CS6;
+    case UART_DATA_SEVEN: options.c_cflag |= CS7;
+    case UART_DATA_EIGHT: options.c_cflag |= CS8;
+    }
+
+    tcsetattr(fd, TCSANOW, &options);
+
+    usleep(10000);
+}

@@ -22,9 +22,11 @@
  */
 #include "lot_uart.h"
 
+#include <chrono>
 #include <fcntl.h>    // open(), fcntl()
 #include <termios.h>
-#include <unistd.h>    // close(), usleep()
+#include <thread>
+#include <unistd.h>    // close()
 
 int lot_uart_init(const char *device) {
     int            fd;
@@ -72,7 +74,7 @@ int lot_uart_init(const char *device) {
 
     tcsetattr(fd, TCSANOW, &options);
 
-    usleep(10000);
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
     return fd;
 }
@@ -129,7 +131,7 @@ void lot_uart_set_baudrate(int fd, uint32_t baudrate) {
 
     tcsetattr(fd, TCSANOW, &options);
 
-    usleep(10000);
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
 }
 
 void lot_uart_set_data_bits(int fd, UartDataBits bits) {
@@ -147,7 +149,7 @@ void lot_uart_set_data_bits(int fd, UartDataBits bits) {
 
     tcsetattr(fd, TCSANOW, &options);
 
-    usleep(10000);
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
 }
 
 void lot_uart_set_parity_bits(int fd, UartParityBits bits) {
@@ -176,5 +178,20 @@ void lot_uart_set_parity_bits(int fd, UartParityBits bits) {
 
     tcsetattr(fd, TCSANOW, &options);
 
-    usleep(10000);
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+}
+
+void lot_uart_set_stop_bits(int fd, UartStopBits bits) {
+    struct termios options;
+
+    tcgetattr(fd, &options);
+
+    switch(bits) {
+    case UART_STOP_ONE: options.c_cflag &= ~CSTOPB; break;
+    case UART_STOP_TWO: options.c_cflag |= CSTOPB; break;
+    }
+
+    tcsetattr(fd, TCSANOW, &options);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
 }

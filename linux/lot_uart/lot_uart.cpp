@@ -24,24 +24,55 @@
 
 #include <fcntl.h>    // open(), fcntl()
 #include <termios.h>
-#include <unistd.h>    // close()
+#include <unistd.h>    // close(), usleep()
 
 int lot_uart_init(const char *device) {
+    int            fd;
+    struct termios options;
+
     // No controlling tty, Enables nonblocking mode.
-    int fd = open(device, O_RDWR | O_NOCTTY | O_NONBLOCK);
+    fd = open(device, O_RDWR | O_NOCTTY | O_NONBLOCK);
     if(fd < 0) { return fd; }
 
     // Explicit reset due to O_NONBLOCK.
     fcntl(fd, F_SETFL, O_RDWR);
 
-    // Default, 115200, 8 bits, none parity bits, 1 stop bits
-    lot_uart_set_baudrate(fd, 115200);
+    tcgetattr(fd, &options);
 
-    lot_uart_set_data_bits(fd, UART_DATA_EIGHT);
+    // Raw level read/write. Non-standard.
+    cfmakeraw(&options);
 
-    lot_uart_set_parity_bits(fd, UART_PARITY_NONE);
+    options.c_cc[VMIN]  = 0;
+    options.c_cc[VTIME] = 100;    // timeout = 10s
 
-    lot_uart_set_stop_bits(fd, UART_STOP_ONE);
+    // Ignore Error.
+    options.c_iflag |= IGNPAR;
+
+    // Disable implementation-defined output processing.
+    options.c_oflag &= ~OPOST;
+
+    options.c_cflag |= (CLOCAL | CREAD);
+
+    // 115200 bit/s
+    cfsetispeed(&options, B115200);
+    cfsetospeed(&options, B115200);
+
+    // 8 bits
+    options.c_cflag &= ~CSIZE;
+    options.c_cflag |= CS8;
+
+    // None parity bits
+    options.c_cflag &= ~PARENB;
+    options.c_iflag &= ~INPCK;
+
+    // 1 stop bits
+    options.c_cflag &= ~CSTOPB;
+
+    options.c_lflag &= ~(ISIG | ICANON | ECHO | ECHOE);
+
+    tcsetattr(fd, TCSANOW, &options);
+
+    usleep(10000);
 
     return fd;
 }

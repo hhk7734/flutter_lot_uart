@@ -42,32 +42,36 @@ enum UartStopBits { one, two }
 
 class Uart {
   final String device;
-  late final int fd;
+  int _fd = -1;
   final _native = libLotUart;
 
   Uart(this.device);
 
+  int get fd => _fd;
+
   bool init() {
     final cDevice = device.toNativeUtf8();
-    fd = _native.init(cDevice.cast<ffi.Int8>());
-    return fd >= 0 ? true : false;
+
+    dispose();
+    _fd = _native.init(cDevice.cast<ffi.Int8>());
+    return _fd >= 0 ? true : false;
   }
 
-  set baudrate(int baudrate) => _native.set_baudrate(fd, baudrate);
+  set baudrate(int baudrate) => _native.set_baudrate(_fd, baudrate);
 
   set dataBits(UartDataBits bits) {
     switch (bits) {
       case UartDataBits.five:
-        _native.set_data_bits(fd, CEnumUartDataBits.FIVE);
+        _native.set_data_bits(_fd, CEnumUartDataBits.FIVE);
         break;
       case UartDataBits.six:
-        _native.set_data_bits(fd, CEnumUartDataBits.SIX);
+        _native.set_data_bits(_fd, CEnumUartDataBits.SIX);
         break;
       case UartDataBits.seven:
-        _native.set_data_bits(fd, CEnumUartDataBits.SEVEN);
+        _native.set_data_bits(_fd, CEnumUartDataBits.SEVEN);
         break;
       case UartDataBits.eight:
-        _native.set_data_bits(fd, CEnumUartDataBits.EIGHT);
+        _native.set_data_bits(_fd, CEnumUartDataBits.EIGHT);
         break;
     }
   }
@@ -75,13 +79,13 @@ class Uart {
   set parityBits(UartParityBits bits) {
     switch (bits) {
       case UartParityBits.none:
-        _native.set_parity_bits(fd, CEnumUartParityBits.NONE);
+        _native.set_parity_bits(_fd, CEnumUartParityBits.NONE);
         break;
       case UartParityBits.even:
-        _native.set_parity_bits(fd, CEnumUartParityBits.EVEN);
+        _native.set_parity_bits(_fd, CEnumUartParityBits.EVEN);
         break;
       case UartParityBits.odd:
-        _native.set_parity_bits(fd, CEnumUartParityBits.ODD);
+        _native.set_parity_bits(_fd, CEnumUartParityBits.ODD);
         break;
     }
   }
@@ -89,10 +93,10 @@ class Uart {
   set stopBits(UartStopBits bits) {
     switch (bits) {
       case UartStopBits.one:
-        _native.set_stop_bits(fd, CEnumUartStopBits.ONE);
+        _native.set_stop_bits(_fd, CEnumUartStopBits.ONE);
         break;
       case UartStopBits.two:
-        _native.set_stop_bits(fd, CEnumUartStopBits.TWO);
+        _native.set_stop_bits(_fd, CEnumUartStopBits.TWO);
         break;
     }
   }
@@ -105,18 +109,18 @@ class Uart {
       _txBuf[index++] = value;
     }
 
-    _native.transmit(fd, _txBuf, txBuf.length);
+    _native.transmit(_fd, _txBuf, txBuf.length);
 
     malloc.free(_txBuf);
   }
 
-  int receiveAvailable() => _native.receive_available(fd);
+  int receiveAvailable() => _native.receive_available(_fd);
 
   Uint8List receive(int rxSize) {
     final _rxBuf = malloc.allocate<ffi.Uint8>(rxSize);
     final rxBuf = Uint8List(rxSize);
 
-    _native.receive(fd, _rxBuf, rxSize);
+    _native.receive(_fd, _rxBuf, rxSize);
 
     for (var index = 0; index < rxSize; index++) {
       rxBuf[index] = _rxBuf[index];
@@ -128,8 +132,9 @@ class Uart {
   }
 
   void dispose() {
-    if (fd >= 0) {
-      _native.dispose(fd);
+    if (_fd >= 0) {
+      _native.dispose(_fd);
+      _fd = -1;
     }
   }
 }

@@ -26,7 +26,7 @@
 #include <fcntl.h>    // open(), fcntl()
 #include <termios.h>
 #include <thread>
-#include <unistd.h>    // close()
+#include <unistd.h>    // close(), write()
 
 int lot_uart_init(const char *device) {
     int            fd;
@@ -194,4 +194,8 @@ void lot_uart_set_stop_bits(int fd, UartStopBits bits) {
     tcsetattr(fd, TCSANOW, &options);
 
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
+}
+
+void lot_uart_transmit(int fd, uint8_t *tx_buf, int tx_size) {
+    write(fd, tx_buf, tx_size);
 }

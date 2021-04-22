@@ -59,7 +59,7 @@ void lot_uart_set_stop_bits(int fd, UartStopBits bits);
 
 void lot_uart_transmit(int fd, uint8_t *tx_buf, int tx_size);
 
-int lot_uart_receive_available(void);
+int lot_uart_receive_available(int fd);
 
 void lot_uart_receive(int fd, uint8_t *rx_buf, int rx_size);
 

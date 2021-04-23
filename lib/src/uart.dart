@@ -49,12 +49,14 @@ class Uart {
 
   int get fd => _fd;
 
-  bool init() {
-    final cDevice = device.toNativeUtf8();
-
+  void init() {
     dispose();
+
+    final cDevice = device.toNativeUtf8();
     _fd = _native.init(cDevice.cast<ffi.Int8>());
-    return _fd >= 0 ? true : false;
+    if (_fd < 0) {
+      throw 'Failed to open $device';
+    }
   }
 
   set baudrate(int baudrate) => _native.set_baudrate(_fd, baudrate);
